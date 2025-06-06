@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./apps/client-app"
+    },
+    {
+      "path": "./apps/admin-app"
     }
   ]
 }

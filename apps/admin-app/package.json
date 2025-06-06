@@ -1,8 +1,8 @@
 {
-  "name": "@survey/client-app",
+  "name": "@survey/admin-app",
   "version": "0.0.1",
   "private": true,
   "nx": {
-    "name": "client-app"
+    "name": "admin-app"
   }
 }
