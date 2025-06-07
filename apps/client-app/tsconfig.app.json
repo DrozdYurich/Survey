@@ -7,7 +7,12 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "resolveJsonModule": true,
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@pages/*": ["src/pages/*"]
+    }
   },
   "exclude": [
     "out-tsc",
