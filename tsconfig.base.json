@@ -5,7 +5,7 @@
     "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "lib": ["es2022"],
+    "lib": ["es2022", "dom"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmitOnError": true,
@@ -15,7 +15,25 @@
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
     "target": "es2022",
-    "customConditions": ["development"]
-  }
+    "customConditions": ["development"],
+    "baseUrl": ".",
+    "paths": {},
+    "types": ["vite/client", "node"],
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "apps/**/*.vue",
+    "apps/**/*.d.ts",
+    "libs/**/*.ts",
+    "libs/**/*.tsx",
+    "libs/**/*.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
 }

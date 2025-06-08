@@ -1,6 +1,4 @@
-<script setup lang="ts">
-import NxWelcome from '../app/NxWelcome.vue';
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <h2>Admin-app</h2>

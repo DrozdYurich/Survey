@@ -1,7 +1,8 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
 import path from 'path';
+
+import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite';
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -15,6 +16,12 @@ export default defineConfig(() => ({
     host: 'localhost',
   },
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+    },
+  },
 
   // Uncomment this if you are using workers.
   // worker: {

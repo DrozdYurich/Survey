@@ -1,21 +1,114 @@
-import vue from 'eslint-plugin-vue';
-import baseConfig from '../../eslint.config.mjs';
+import js from '@eslint/js';
+import nxEslintPlugin from '@nx/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import importPlugin from 'eslint-plugin-import';
+import vuePlugin from 'eslint-plugin-vue';
+import globals from 'globals';
+import vueParser from 'vue-eslint-parser';
 
 export default [
-  ...baseConfig,
-  ...vue.configs['flat/recommended'],
+  js.configs.recommended,
+  ...nxEslintPlugin.configs['flat/base'],
+  ...nxEslintPlugin.configs['flat/typescript'],
   {
-    files: ['**/*.vue'],
+    plugins: {
+      import: importPlugin,
+    },
+    rules: {
+      // Базовые правила сортировки импортов
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            ['parent', 'sibling'],
+            'index',
+            'object',
+            'type',
+          ],
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+      'import/first': 'error',
+      'import/newline-after-import': 'error',
+      'import/no-duplicates': 'error',
+    },
+  },
+  {
     languageOptions: {
-      parserOptions: {
-        parser: await import('@typescript-eslint/parser'),
+      globals: {
+        ...globals.browser,
+        ...globals.node,
       },
     },
   },
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.vue'],
-    rules: {
-      'vue/multi-word-component-names': 'off',
+    files: ['**/*.vue'],
+    plugins: {
+      vue: vuePlugin,
     },
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tsParser,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        extraFileExtensions: ['.vue'],
+      },
+    },
+    rules: {
+      ...vuePlugin.configs['base'].rules,
+      ...vuePlugin.configs['vue3-recommended'].rules,
+      'vue/multi-word-component-names': 'off',
+      'vue/script-setup-uses-vars': 'error',
+      'vue/no-unused-components': 'warn',
+      'vue/no-unused-vars': 'warn',
+      'vue/comment-directive': 'off',
+    },
+  },
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tsParser,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn',
+      // Для TypeScript можно добавить сортировку типов
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            ['parent', 'sibling'],
+            'index',
+            'object',
+            'type',
+          ],
+          pathGroups: [
+            {
+              pattern: '@/**', // Пример для алиасов
+              group: 'internal',
+              position: 'before',
+            },
+          ],
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+    },
+  },
+  {
+    ignores: ['**/node_modules', '**/dist', '**/.nx', '**/coverage'],
   },
 ];

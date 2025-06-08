@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router';
 import { HomeView } from '@pages/HomePage/index';
 import { SurveyPage } from '@pages/SurveyPage/index';
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
