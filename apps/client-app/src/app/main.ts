@@ -1,8 +1,9 @@
 import './styles/styles.css';
 import Aura from '@primeuix/themes/aura';
+import { createPinia } from 'pinia';
 import PrimeVue from 'primevue/config';
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
+
 import App from './App.vue';
 import router from './router';
 

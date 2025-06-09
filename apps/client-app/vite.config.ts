@@ -21,7 +21,8 @@ export default defineConfig(() => ({
       '@': path.resolve(__dirname, './src'),
       '@pages': path.resolve(__dirname, './src/pages'),
       '@features': path.resolve(__dirname, './src/features'),
-      '@widgets': path.resolve(__dirname, './src/pages/widgets'),
+      '@widgets': path.resolve(__dirname, './src/widgets'),
+      '@shared': path.resolve(__dirname, './src/shared'),
     },
   },
 

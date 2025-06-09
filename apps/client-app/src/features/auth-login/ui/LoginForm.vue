@@ -1,7 +1,7 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen">
+  <div class="login-container">
     <div
-      class="bg-[var(--background-color)] rounded-lg shadow-lg p-6 w-full max-w-md"
+      class="login-card"
       :style="{ borderColor: 'var(--card-border-color)', borderWidth: '1px' }"
     >
       <div v-if="loading">
@@ -12,65 +12,53 @@
         />
       </div>
       <Divider align="center" type="solid">
-        <span
-          class="text-xl font-bold text-[var(--text-color)] bg-[var(--background-color)]"
-        >
-          Вход
-        </span>
+        <span class=""> Вход </span>
       </Divider>
-
       <Form
         :initialValues="initialValues"
         :resolver="resolver"
+        class="login-form"
         @submit="onFormSubmit"
-        class="flex flex-col gap-4 w-full"
       >
-        <FormField v-slot="$field" name="email" class="flex flex-col gap-1">
+        <FormField v-slot="$field" name="email" class="">
           <FloatLabel variant="on">
             <InputText
-              class="w-full"
-              type="text"
-              v-model="initialValues.email"
               id="email"
+              v-model="initialValues.email"
+              class="login-input"
+              type="text"
             />
             <label for="email"> Username</label>
           </FloatLabel>
-          <Message
+          <MessageAuth
             v-if="$field?.invalid"
-            severity="error"
-            size="small"
-            variant="simple"
-            >{{ $field.error?.message }}</Message
-          >
+            :message="$field.error?.message"
+          />
         </FormField>
 
-        <FormField v-slot="$field" name="password" class="flex flex-col gap-1">
+        <FormField v-slot="$field" name="password" class="">
           <FloatLabel variant="on">
             <Password
-              type="text"
               id="password"
               v-model="initialValues.password"
+              type="text"
+              class="login-input"
               :feedback="true"
               :inputAttrs="{ autocomplete: 'current-password' }"
             />
             <label for="password">Пароль</label>
           </FloatLabel>
-          <Message
+
+          <MessageAuth
             v-if="$field?.invalid"
-            severity="error"
-            size="small"
-            variant="simple"
-            >{{ $field.error?.message }}</Message
-          >
+            :message="$field.error?.message"
+          />
         </FormField>
-        <Message
-          severity="warn"
-          class="text-center text-[var(var(--border-color))]"
-        >
+        <Message severity="warn" class="login-forgot-password">
           Забыли пароль?
           <Button
             variant="text"
-            class="text-[var(--border-color)] p-0 border-0 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:shadow-none"
+            class=""
             style="text-decoration: underline; text-underline-offset: 4px"
             @click=""
             >Восстановить пароль</Button
@@ -79,7 +67,7 @@
         <Button
           :disabled="loading"
           type="submit"
-          class="bg-[var(--button-bg)] border-0 save-btn"
+          class="login-submit-button"
           :label="'Войти'"
         />
       </Form>
@@ -88,30 +76,22 @@
 </template>
 
 <script setup>
-import { reactive, computed, ref } from 'vue';
+import { FormField, Form } from '@primevue/forms';
 import { yupResolver } from '@primevue/forms/resolvers/yup';
-import * as yup from 'yup';
-import { FormField } from '@primevue/forms';
-import { nextTick } from 'vue';
 import {
   Button,
-  DatePicker,
   Divider,
   FloatLabel,
   InputText,
   Message,
   Password,
   ProgressBar,
-  Select,
 } from 'primevue';
-import { Form } from '@primevue/forms';
+import { reactive, computed, ref } from 'vue';
+import * as yup from 'yup';
 
-import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router';
+import { MessageAuth } from '@/shared';
 
-import axios from 'axios';
-
-const router = useRouter();
 const loading = ref(false);
 const initialValues = reactive({
   nickname: '',
@@ -120,7 +100,7 @@ const initialValues = reactive({
 const schema = computed(() => {
   const baseSchema = {
     email: yup.string().required('Укажите email'),
-    // .email("Некорректный формат email"),
+
     password: yup
       .string()
       .min(8, 'Пароль должен содержать минимум 8 символов')
@@ -132,9 +112,68 @@ const schema = computed(() => {
 
 const resolver = computed(() => yupResolver(schema.value));
 
-const onFormSubmit = async (formData) => {};
+const onFormSubmit = async (formData) => {
+  console.log(formData);
+};
 </script>
 <style>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border: 1px solid var(--card-border-color);
+  border-radius: 0.5rem;
+  background-color: var(--background-color);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-input {
+  width: 100%;
+  border-radius: 0.375rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: border-color 0.2s ease-in-out;
+}
+
+.login-forgot-password {
+  text-align: left;
+}
+.login-submit-button {
+  background-color: var(--button-bg);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+
+  &:not(:disabled):hover {
+    background-color: darken(
+      var(--button-bg),
+      10%
+    ); /* Затемняем кнопку при наведении */
+    cursor: pointer;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
 .custom-progressbar .p-progressbar-value {
   background-color: black !important;
 }
@@ -145,6 +184,7 @@ label {
   background-color: transparent;
 }
 .p-inputtext {
+  width: 100%;
   background: var(--background-color);
 }
 .p-select {
