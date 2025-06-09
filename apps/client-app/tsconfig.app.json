@@ -11,7 +11,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@features/*": ["src/features/*"],
+      "@widgets/*": ["src/widgets/*"]
     }
   },
   "exclude": [

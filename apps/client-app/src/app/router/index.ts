@@ -1,3 +1,6 @@
+import { TheAuth } from '@/pages/Auth';
+import { TheLogin } from '@/pages/Auth/Login';
+import { TheRegistr } from '@/pages/Auth/Registr';
 import { HomeView } from '@pages/HomePage/index';
 import { SurveyPage } from '@pages/SurveyPage/index';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -14,6 +17,23 @@ const router = createRouter({
       path: '/survey',
       name: 'survey',
       component: SurveyPage,
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      component: TheAuth,
+      children: [
+        {
+          path: 'login',
+          name: 'login',
+          component: TheLogin,
+        },
+        {
+          path: 'registr',
+          name: 'registr',
+          component: TheRegistr,
+        },
+      ],
     },
   ],
 });
