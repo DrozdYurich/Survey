@@ -9,9 +9,10 @@ export const useLoginStore = defineStore('LoginStore', () => {
     dataLogin.value = data;
   }
   const getDataLogin = computed(() => dataLogin.value);
-  async function login() {
+  async function login(data: LoginData) {
     try {
       // Запрос на бэк
+      setDataLogin(data);
       console.log(dataLogin.value);
     } catch (error) {
       console.log(error);

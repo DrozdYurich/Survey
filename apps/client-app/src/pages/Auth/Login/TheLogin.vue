@@ -1,10 +1,10 @@
 <template>
   <div>
     Login
-    <AuthWidgets />
+    <AuthLoginWidgets />
   </div>
 </template>
 <script setup lang="ts">
-import { AuthWidgets } from '@/widgets/AuthWidgets';
+import { AuthLoginWidgets } from '@/widgets/AuthWidgets';
 </script>
 <style scoped></style>

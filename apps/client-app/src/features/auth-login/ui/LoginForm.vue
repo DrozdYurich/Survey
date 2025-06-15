@@ -14,28 +14,22 @@
       <Divider align="center" type="solid">
         <span class=""> Вход </span>
       </Divider>
-      <Form
-        :initialValues="initialValues"
-        :resolver="resolver"
-        class="login-form"
-        @submit="onFormSubmit"
-      >
-        <FormField v-slot="$field" name="email" class="">
+      <Form :resolver="resolver" class="login-form" @submit="onSubmit">
+        <FormField v-slot="$field" name="identifier" class="">
           <FloatLabel variant="on">
             <InputText
-              id="email"
-              v-model="initialValues.email"
+              id="identifier"
+              v-model="initialValues.identifier"
               class="login-input"
               type="text"
             />
-            <label for="email"> Username</label>
+            <label for="identifier"> Username</label>
           </FloatLabel>
           <MessageAuth
             v-if="$field?.invalid"
             :message="$field.error?.message"
           />
         </FormField>
-
         <FormField v-slot="$field" name="password" class="">
           <FloatLabel variant="on">
             <Password
@@ -75,9 +69,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { FormField, Form } from '@primevue/forms';
 import { yupResolver } from '@primevue/forms/resolvers/yup';
+import { useForm } from '@primevue/forms/useform';
 import {
   Button,
   Divider,
@@ -90,16 +85,21 @@ import {
 import { reactive, computed, ref } from 'vue';
 import * as yup from 'yup';
 
+import { LoginData } from '@/entities/User';
+
 import { MessageAuth } from '@/shared';
 
+import { useLoginStore } from '../model/useLoginStore';
+
 const loading = ref(false);
-const initialValues = reactive({
-  nickname: '',
+const loginStore = useLoginStore();
+const initialValues = reactive<LoginData>({
+  identifier: '',
   password: '',
 });
 const schema = computed(() => {
   const baseSchema = {
-    email: yup.string().required('Укажите email'),
+    identifier: yup.string().required(''),
 
     password: yup
       .string()
@@ -111,10 +111,23 @@ const schema = computed(() => {
 });
 
 const resolver = computed(() => yupResolver(schema.value));
+const { valid, handleSubmit } = useForm({
+  initialValues,
+});
 
-const onFormSubmit = async (formData) => {
-  console.log(formData);
-};
+// Обработчик отправки формы
+const onSubmit = handleSubmit(async (formValues) => {
+  try {
+    if (valid) {
+      console.log(formValues);
+      await loginStore.login(formValues);
+    }
+  } catch (error) {
+    console.error('Ошибка входа:', error);
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 <style>
 .login-container {

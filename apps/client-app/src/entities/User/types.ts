@@ -3,6 +3,11 @@ export interface LoginData {
   password: string;
 }
 export interface RegistrData {
-  identifier: string;
+  firstName: string;
+  lastName: string;
+  patronymic?: string;
+  birthDate: Date;
+  nickName: string;
   password: string;
+  email: string;
 }

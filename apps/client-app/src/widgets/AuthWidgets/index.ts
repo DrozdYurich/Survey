@@ -1,1 +1,1 @@
-export { default as AuthWidgets } from './ui/AuthWidgets.vue';
+export { default as AuthLoginWidgets } from './ui/AuthLoginWidgets.vue';
