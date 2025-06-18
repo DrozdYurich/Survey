@@ -14,7 +14,12 @@
       <Divider align="center" type="solid">
         <span class=""> Вход </span>
       </Divider>
-      <Form :resolver="resolver" class="login-form" @submit="onSubmit">
+      <Form
+        :initialValues="initialValues"
+        :resolver="resolver"
+        class="login-form"
+        @submit="onFormSubmit"
+      >
         <FormField v-slot="$field" name="identifier" class="">
           <FloatLabel variant="on">
             <InputText
@@ -72,7 +77,7 @@
 <script setup lang="ts">
 import { FormField, Form } from '@primevue/forms';
 import { yupResolver } from '@primevue/forms/resolvers/yup';
-import { useForm } from '@primevue/forms/useform';
+
 import {
   Button,
   Divider,
@@ -91,15 +96,18 @@ import { MessageAuth } from '@/shared';
 
 import { useLoginStore } from '../model/useLoginStore';
 
+import type { FormSubmitEvent } from '@primevue/forms';
+
 const loading = ref(false);
 const loginStore = useLoginStore();
 const initialValues = reactive<LoginData>({
   identifier: '',
   password: '',
 });
+
 const schema = computed(() => {
   const baseSchema = {
-    identifier: yup.string().required(''),
+    identifier: yup.string().required('Введите email или nickname'),
 
     password: yup
       .string()
@@ -111,23 +119,19 @@ const schema = computed(() => {
 });
 
 const resolver = computed(() => yupResolver(schema.value));
-const { valid, handleSubmit } = useForm({
-  initialValues,
-});
-
-// Обработчик отправки формы
-const onSubmit = handleSubmit(async (formValues) => {
+function ResetForm() {
+  (initialValues.identifier = ''), (initialValues.password = '');
+}
+const onFormSubmit = async (event: FormSubmitEvent<Record<string, any>>) => {
   try {
-    if (valid) {
-      console.log(formValues);
-      await loginStore.login(formValues);
-    }
+    const values = event.values as LoginData;
+    console.log(values);
+    ResetForm();
+    await loginStore.login(values);
   } catch (error) {
-    console.error('Ошибка входа:', error);
-  } finally {
-    loading.value = false;
+    console.error(error);
   }
-});
+};
 </script>
 <style>
 .login-container {
