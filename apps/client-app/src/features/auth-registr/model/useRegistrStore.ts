@@ -1,22 +1,30 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
-import { LoginData } from '@/entities/User';
+import { RegistrData } from '@/entities/User';
 
 export const useRegistrStore = defineStore('RegistrStore', () => {
-  const dataLogin = ref<LoginData>({ identifier: '', password: '' });
-  function setDataLogin(data: LoginData) {
-    dataLogin.value = data;
+  const dataRegistr = ref<RegistrData>({
+    birthDate: null,
+    password: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    nickName: '',
+    patronymic: '',
+  });
+  function setDataRegistr(data: RegistrData) {
+    dataRegistr.value = data;
   }
-  const getDataLogin = computed(() => dataLogin.value);
-  async function login(data: LoginData) {
+  const getDataRegistr = computed(() => dataRegistr.value);
+  async function registr(data: RegistrData) {
     try {
       // Запрос на бэк
-      setDataLogin(data);
-      console.log(dataLogin.value);
+      setDataRegistr(data);
+      console.log(dataRegistr.value);
     } catch (error) {
       console.log(error);
     }
   }
-  return { setDataLogin, getDataLogin, login };
+  return { setDataRegistr, getDataRegistr, registr };
 });

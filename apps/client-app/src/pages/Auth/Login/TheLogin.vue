@@ -1,6 +1,5 @@
 <template>
   <div>
-    Login
     <AuthLoginWidgets />
   </div>
 </template>

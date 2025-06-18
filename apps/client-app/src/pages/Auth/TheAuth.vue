@@ -1,6 +1,5 @@
 <template>
   <div>
-    AuthLayout
     <RouterView />
   </div>
 </template>

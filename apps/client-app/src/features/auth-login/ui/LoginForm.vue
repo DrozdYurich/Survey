@@ -20,10 +20,10 @@
               class="login-input"
               type="text"
             />
-            <label for="identifier"> Username</label>
+            <label for="identifier"> Логин</label>
           </FloatLabel>
           <MessageAuth
-            v-if="$field?.invalid"
+            :is-show="$field?.invalid"
             :message="$field.error?.message"
           />
         </FormField>
@@ -34,14 +34,15 @@
               v-model="initialValues.password"
               type="text"
               class="login-input"
-              :feedback="true"
+              :feedback="false"
+              :showStrengthMeter="false"
               :inputAttrs="{ autocomplete: 'current-password' }"
             />
             <label for="password">Пароль</label>
           </FloatLabel>
 
           <MessageAuth
-            v-if="$field?.invalid"
+            :is-show="$field?.invalid"
             :message="$field.error?.message"
           />
         </FormField>
@@ -94,6 +95,14 @@ const schema = computed(() => {
 
     password: yup
       .string()
+      .matches(
+        /[a-z]/,
+        'Пароль должен содержать хотя бы одну строчную латинскую букву'
+      )
+      .matches(
+        /[A-Z]/,
+        'Пароль должен содержать хотя бы одну заглавную латинскую букву'
+      )
       .min(8, 'Пароль должен содержать минимум 8 символов')
       .required('Пароль обязателен'),
   };
@@ -107,10 +116,12 @@ function ResetForm() {
 }
 const onFormSubmit = async (event: FormSubmitEvent<Record<string, any>>) => {
   try {
-    const values = event.values as LoginData;
-    console.log(values);
-    ResetForm();
-    await loginStore.login(values);
+    if (event.valid) {
+      const values = event.values as LoginData;
+      console.log(values);
+      ResetForm();
+      await loginStore.login(values);
+    }
   } catch (error) {
     console.error(error);
   }

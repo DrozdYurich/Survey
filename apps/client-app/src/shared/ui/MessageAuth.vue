@@ -1,5 +1,5 @@
 <template>
-  <Message severity="error" size="small" variant="simple">{{
+  <Message v-if="isShow" severity="error" size="small" variant="simple">{{
     message
   }}</Message>
 </template>
@@ -7,8 +7,9 @@
 import { Message } from 'primevue';
 
 interface TProps {
-  message: string;
+  message: string | undefined;
+  isShow: boolean;
 }
-const { message } = defineProps<TProps>();
+const { message, isShow } = defineProps<TProps>();
 </script>
 <style scoped></style>

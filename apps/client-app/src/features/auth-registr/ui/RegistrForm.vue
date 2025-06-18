@@ -12,18 +12,94 @@
         class="login-form"
         @submit="onFormSubmit"
       >
-        <FormField v-slot="$field" name="identifier" class="">
+        <FormField v-slot="$field" name="email" class="">
           <FloatLabel variant="on">
             <InputText
-              id="identifier"
-              v-model="initialValues.identifier"
+              id="email"
+              v-model="initialValues.email"
               class="login-input"
               type="text"
             />
-            <label for="identifier"> Username</label>
+            <label for="identifier"> Email</label>
           </FloatLabel>
           <MessageAuth
-            v-if="$field?.invalid"
+            :is-show="$field?.invalid"
+            :message="$field.error?.message"
+          />
+        </FormField>
+        <FormField v-slot="$field" name="nickName" class="">
+          <FloatLabel variant="on">
+            <InputText
+              id="nickName"
+              v-model="initialValues.nickName"
+              class="login-input"
+              type="text"
+            />
+            <label for="nickName"> Логин</label>
+          </FloatLabel>
+          <MessageAuth
+            :is-show="$field?.invalid"
+            :message="$field.error?.message"
+          />
+        </FormField>
+        <FormField v-slot="$field" name="firstName" class="">
+          <FloatLabel variant="on">
+            <InputText
+              id="firstName"
+              v-model="initialValues.firstName"
+              class="login-input"
+              type="text"
+            />
+            <label for="firstName"> Имя</label>
+          </FloatLabel>
+          <MessageAuth
+            :is-show="$field?.invalid"
+            :message="$field.error?.message"
+          />
+        </FormField>
+        <FormField v-slot="$field" name="lastName" class="">
+          <FloatLabel variant="on">
+            <InputText
+              id="lastName"
+              v-model="initialValues.lastName"
+              class="login-input"
+              type="text"
+            />
+            <label for="lastName"> Фамилия</label>
+          </FloatLabel>
+          <MessageAuth
+            :is-show="$field?.invalid"
+            :message="$field.error?.message"
+          />
+        </FormField>
+        <FormField v-slot="$field" name="patronymic" class="">
+          <FloatLabel variant="on">
+            <InputText
+              id="patronymic"
+              v-model="initialValues.patronymic"
+              class="login-input"
+              type="text"
+            />
+            <label for="patronymic"> Отчество</label>
+          </FloatLabel>
+          <MessageAuth
+            :is-show="$field?.invalid"
+            :message="$field.error?.message"
+          />
+        </FormField>
+        <FormField v-slot="$field" name="birthDate" class="">
+          <FloatLabel variant="on">
+            <DatePicker
+              id="birthDate"
+              v-model="initialValues.birthDate as Date"
+              class="login-input"
+              dateFormat="dd.mm.yy"
+            />
+
+            <label for="birthDate"> Дата Рождения</label>
+          </FloatLabel>
+          <MessageAuth
+            :is-show="$field?.invalid"
             :message="$field.error?.message"
           />
         </FormField>
@@ -41,7 +117,7 @@
           </FloatLabel>
 
           <MessageAuth
-            v-if="$field?.invalid"
+            :is-show="$field?.invalid"
             :message="$field.error?.message"
           />
         </FormField>
@@ -59,7 +135,7 @@
           :disabled="loading"
           type="submit"
           class="login-submit-button"
-          :label="'Войти'"
+          :label="'Зарегестрироваться'"
         />
       </Form>
     </div>
@@ -67,50 +143,97 @@
 </template>
 
 <script setup lang="ts">
-import { useLoginStore } from '@features/auth-login';
+import { formatDate, useRegistrStore } from '@features/auth-registr';
 import { FormField, Form } from '@primevue/forms';
 import { yupResolver } from '@primevue/forms/resolvers/yup';
 
-import { Button, FloatLabel, InputText, Message, Password } from 'primevue';
+import {
+  Button,
+  DatePicker,
+  FloatLabel,
+  InputText,
+  Message,
+  Password,
+} from 'primevue';
 import { reactive, computed, ref } from 'vue';
 import * as yup from 'yup';
 
-import { LoginData } from '@/entities/User';
+import { RegistrData } from '@/entities/User';
 
 import { MessageAuth, DividerAuth, AppProgressBar } from '@/shared';
 
 import type { FormSubmitEvent } from '@primevue/forms';
 
 const loading = ref(false);
-const loginStore = useLoginStore();
-const initialValues = reactive<LoginData>({
-  identifier: '',
+const registrStore = useRegistrStore();
+const initialValues = reactive<RegistrData>({
+  email: '',
   password: '',
+  firstName: '',
+  lastName: '',
+  nickName: '',
+  patronymic: '',
+  birthDate: null,
 });
 
 const schema = computed(() => {
   const baseSchema = {
-    identifier: yup.string().required('Введите email или nickname'),
+    email: yup
+      .string()
+      .email('Некорректный email')
+      .required('Email является обязательным полем для регистрации'),
+    firstName: yup
+      .string()
 
+      .required('Имя является обязательным полем для регистрации'),
+    lastName: yup
+      .string()
+      .required('Фамилия является обязательным полем для регистрации'),
+    nickName: yup
+      .string()
+      .transform((value) => (value === '' ? undefined : value))
+      .min(3, 'Слишком короткий Логин')
+      .required('Логин является обязательным полем для регистрации'),
+    patronymic: yup.string(),
+    birthDate: yup
+      .date()
+      .required('Дата Рождения является обязательным полем для регистрации'),
     password: yup
       .string()
+      .matches(
+        /[a-z]/,
+        'Пароль должен содержать хотя бы одну строчную латинскую букву'
+      )
+      .matches(
+        /[A-Z]/,
+        'Пароль должен содержать хотя бы одну заглавную латинскую букву'
+      )
       .min(8, 'Пароль должен содержать минимум 8 символов')
       .required('Пароль обязателен'),
   };
-
   return yup.object().shape(baseSchema);
 });
 
 const resolver = computed(() => yupResolver(schema.value));
 function ResetForm() {
-  (initialValues.identifier = ''), (initialValues.password = '');
+  (initialValues.email = ''), (initialValues.password = '');
+  (initialValues.birthDate = null),
+    (initialValues.firstName = ''),
+    (initialValues.lastName = ''),
+    (initialValues.patronymic = ''),
+    (initialValues.nickName = '');
 }
 const onFormSubmit = async (event: FormSubmitEvent<Record<string, any>>) => {
   try {
-    const values = event.values as LoginData;
-    console.log(values);
-    ResetForm();
-    await loginStore.login(values);
+    if (event.valid) {
+      const values = event.values as RegistrData;
+      const dataApi: RegistrData = {
+        ...values,
+        birthDate: formatDate(values.birthDate as Date),
+      };
+      await registrStore.registr(dataApi);
+      ResetForm();
+    }
   } catch (error) {
     console.error(error);
   }
@@ -162,10 +285,7 @@ const onFormSubmit = async (event: FormSubmitEvent<Record<string, any>>) => {
   transition: background-color 0.2s ease-in-out;
 
   &:not(:disabled):hover {
-    background-color: darken(
-      var(--button-bg),
-      10%
-    ); /* Затемняем кнопку при наведении */
+    background-color: darken(var(--button-bg), 10%);
     cursor: pointer;
   }
 

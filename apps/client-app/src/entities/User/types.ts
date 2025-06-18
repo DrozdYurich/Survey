@@ -6,7 +6,7 @@ export interface RegistrData {
   firstName: string;
   lastName: string;
   patronymic?: string;
-  birthDate: Date;
+  birthDate: Date | null | string;
   nickName: string;
   password: string;
   email: string;
