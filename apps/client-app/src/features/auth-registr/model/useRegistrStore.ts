@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 
 import { LoginData } from '@/entities/User';
 
-export const useLoginStore = defineStore('LoginStore', () => {
+export const useRegistrStore = defineStore('RegistrStore', () => {
   const dataLogin = ref<LoginData>({ identifier: '', password: '' });
   function setDataLogin(data: LoginData) {
     dataLogin.value = data;

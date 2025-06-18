@@ -5,7 +5,7 @@
       :style="{ borderColor: 'var(--card-border-color)', borderWidth: '1px' }"
     >
       <AppProgressBar :loading="loading" />
-      <DividerAuth title="Вход" />
+      <DividerAuth title="Регистрация" />
       <Form
         :initialValues="initialValues"
         :resolver="resolver"
