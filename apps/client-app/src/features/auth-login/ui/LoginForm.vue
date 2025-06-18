@@ -75,6 +75,7 @@
 </template>
 
 <script setup lang="ts">
+import { useLoginStore } from '@features/auth-login';
 import { FormField, Form } from '@primevue/forms';
 import { yupResolver } from '@primevue/forms/resolvers/yup';
 
@@ -94,7 +95,6 @@ import { LoginData } from '@/entities/User';
 
 import { MessageAuth } from '@/shared';
 
-import { useLoginStore } from '../model/useLoginStore';
 
 import type { FormSubmitEvent } from '@primevue/forms';
 
